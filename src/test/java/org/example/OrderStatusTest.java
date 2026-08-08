@@ -25,7 +25,7 @@ public class OrderStatusTest {
         // нажатие на кнопку Статус заказа
         homePage.orderStatusButtonClick();
         homePage.numberOrderClick();
-        homePage.setNumberOrder("234567");
+        homePage.setNumberOrder("345687");
         // нажатие на кнопку Go!
         homePage.goButtonClick();
         // проверить, что отобразилась картинка с текстом "Такого заказа нет"

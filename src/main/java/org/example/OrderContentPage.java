@@ -1,0 +1,99 @@
+package org.example;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+
+// класс для заполнения формы заказа
+public class OrderContentPage {
+    private WebDriver driver;
+
+    // локатор для поля ввода имени
+    private By nameField = By.xpath("//input[@placeholder='* Имя']");
+    // локатор для поля ввода фамилии
+    private By surnameField = By.xpath("//div[@class='Order_Form__17u6u']/div[2]/input");
+    // локатор для поля адреса: куда привести заказ
+    private By placeAnOrderField = By.xpath("//div[@class='Order_Form__17u6u']/div[3]/input");
+    // локатор для поля ввода станции меторо
+    private By metroStationField = By.className("select-search__input");
+    //локатор для выбора станции метро
+    private By selectMetroStation = By.className("select-search__select");
+    // локатор для поля ввода номера телефона
+    private By phoneNumberField = By.xpath("//div[@class='Order_Form__17u6u']/div[5]/input");
+    // локатор для кнопки "Далее"
+    private By orderNextButton = By.xpath("//button[(@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Далее')]");
+
+
+    //введите корректное имя
+    private By errorNameLocator = By.xpath(" //div[normalize-space(text())='Введите корректное имя']");
+    //Введите корректную фамилию
+    private By errorSurnameLocator = By.xpath(" //div[normalize-space(text())='Введите корректную фамилию']");
+    //Введите корректный адрес
+    private By errorAddressLocator = By.xpath(" //div[normalize-space(text())='Введите корректный адрес']");
+    //Выберите станцию
+    private By errorMetroStationLocator = By.xpath(" //div[normalize-space(text())='Выберите станцию']");
+    //Введите корректный номер
+    private By errorPhoneNumberLocator = By.xpath(" //div[normalize-space(text())='Введите корректный номер']");
+
+    // конструктор класса
+    public OrderContentPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    //метод для ввода имени
+    public void setName(String name) {
+        driver.findElement(nameField).sendKeys(name);
+    }
+
+    //метод для ввода фамилии
+    public void setSurname(String surname) {
+        driver.findElement(surnameField).sendKeys(surname);
+    }
+
+    //метод для ввода адреса доставки
+    public void setPlaceAnOrder(String place) {
+        driver.findElement(placeAnOrderField).sendKeys(place);
+    }
+
+    //метод для ввода станции метро
+    public void setMetroStation() {
+        driver.findElement(metroStationField).click();
+        driver.findElement(selectMetroStation).isDisplayed();
+        driver.findElement(metroStationField).sendKeys(Keys.ARROW_DOWN, Keys.ENTER);
+    }
+
+    //метод для ввода номера телефона
+    public void setPhoneNumber(String phoneNumber) {
+        driver.findElement(phoneNumberField).sendKeys(phoneNumber);
+    }
+
+    // нажатие на кнопку "Далее"
+    public void orderNextButtonClick() {
+        driver.findElement(orderNextButton).click();
+    }
+
+    // метод, который объединяет ввод имени, фамилии, адреса и номера телефона
+    public void orderPersonalInfo(String name, String surname, String place, String phoneNumber) {
+        setName(name);
+        setSurname(surname);
+        setPlaceAnOrder(place);
+        setPhoneNumber(phoneNumber);
+    }
+    //методы возвращают истину, если на форме под каждым полеи ввода отображены тексты c ошибками
+    public boolean isErrorNameVisible() {
+        return driver.findElement(errorNameLocator).isDisplayed();
+    }
+    public boolean isErrorSurnameVisible() {
+        return driver.findElement(errorSurnameLocator).isDisplayed();
+    }
+    public boolean isErrorAddressVisible() {
+        return driver.findElement(errorAddressLocator).isDisplayed();
+    }
+    public boolean isErrorMetroStationVisible() {
+        return driver.findElement(errorMetroStationLocator).isDisplayed();
+    }
+    public boolean isErrorPhoneNumberVisible() {
+        return driver.findElement(errorPhoneNumberLocator).isDisplayed();
+    }
+}
+

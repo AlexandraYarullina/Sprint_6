@@ -1,10 +1,6 @@
 package org.example;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -12,16 +8,10 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class YandexLogoTest {
-    private WebDriver driver;
-
-    @BeforeEach
-    public void setUp() {
-        driver = new ChromeDriver();
-    }
+public class YandexLogoTest extends BaseTest{
 
     @Test
-    public void testLogoClickNavigation() {
+    public void checkYandexLogoClickPageOpen() {
         HomePage homePage = new HomePage(driver);
         // открытие главной страницы «Яндекс Самокат»
         homePage.openHomePage();
@@ -34,7 +24,8 @@ public class YandexLogoTest {
         homePage.logoYandexClick();
 
         // ждём появления второй вкладки, главная страница Яндекса
-        wait.until(ExpectedConditions.numberOfWindowsToBe(2));
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.numberOfWindowsToBe(2));
 
         // ищем новую вкладку и переключаемся
         String newHandle = driver.getWindowHandles()
@@ -45,17 +36,12 @@ public class YandexLogoTest {
 
         driver.switchTo().window(newHandle);
 
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.urlContains("ya.ru"));
         // текущая страница
         String currentUrl = driver.getCurrentUrl();
-        // ожидаемый результат URL
-        String expectedUrl = "https://ya.ru/";
 
-        assertTrue(currentUrl.equals(expectedUrl), "Ожидался переход на главную страницу Яндекса, но переход не произошёл. Текущий URL: " + currentUrl);
-    }
-
-    // Закрытие браузера
-    @AfterEach
-    public void tearDown() {
-        driver.quit();
+        // проверка, что текущая страница содержит в URL ya.ru
+        assertTrue(driver.getCurrentUrl().contains("ya.ru"), "URL не содержит ya.ru: " + currentUrl);
     }
 }

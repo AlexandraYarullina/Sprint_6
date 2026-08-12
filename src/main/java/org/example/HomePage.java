@@ -3,7 +3,13 @@ package org.example;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static utils.Constants.MakeOrderButton.DOWN_BUTTON;
+import static utils.Constants.MakeOrderButton.TOP_BUTTON;
+import static utils.Constants.URL_HOME_PAGE;
+
 import java.time.Duration;
 
 // класс главной страницы Яндекс Самокат
@@ -37,7 +43,7 @@ public class HomePage {
     }
     // открытие главной страницы Яндекс Самокат
     public void openHomePage(){
-        driver.get("https://qa-scooter.education-services.ru/");
+        driver.get(URL_HOME_PAGE);
     }
 
     // метод для нажатия на кнопку заказать в вверху страницы
@@ -54,52 +60,28 @@ public class HomePage {
     }
 
     // метод для выбора кнопки Заказать, в зависимости от расположения
-    public void chooseOrderButton(String chooseButton) {
-        if (chooseButton.equals("up")) {
+    public void chooseOrderButton(Enum chooseButton) {
+        if (chooseButton.equals(TOP_BUTTON)) {
             orderUpButtonClick();
-        } else if (chooseButton.equals("down")) {
+        } else if (chooseButton.equals(DOWN_BUTTON)) {
             orderDownButtonClick();
         }
     }
+    // метод для на нажатия на кнопки, проход по вопросам
+    public void scrollPageDownToFAQ(){
+        WebElement element = driver.findElement(By.id(format(questionLocator, 0)));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
+    }
 
     // метод для на нажатия на кнопки, проход по вопросам
-    public void questionButtonClick() {
-        int index=0;
-        WebElement element = driver.findElement(By.id(String.format(questionLocator, 0)));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
-        while(index<=7){
-            if (index==7){
-                driver.findElement(By.id(String.format(questionLocator, index))).sendKeys(Keys.ENTER);
-            }else{
-            driver.findElement(By.id(String.format(questionLocator, index))).click();}
-
-            checkAnswerText(index);
-            index++;
-        }
+    public void questionButtonClick(int index) {
+        driver.findElement(By.id(String.format(questionLocator, index))).click();
     }
 
     // метод для получения ответов и проверка на равенство значений
-    public void checkAnswerText(int index) {
-        new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.id(String.format(answerLocator, index))));
-        String actual = driver.findElement(By.id(String.format(answerLocator, index))).getText();
-        if (index == 0) {
-            assertEquals("Сутки — 400 рублей. Оплата курьеру — наличными или картой.", actual, "Текст не совпадает");
-        } else if (index == 1) {
-            assertEquals("Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.", actual, "Текст не совпадает");
-        } else if (index == 2) {
-            assertEquals("Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30.", actual, "Текст не совпадает");
-        } else if (index == 3) {
-            assertEquals("Только начиная с завтрашнего дня. Но скоро станем расторопнее.", actual, "Текст не совпадает");
-        }else if (index == 4) {
-            assertEquals("Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010.", actual, "Текст не совпадает");
-        }else if (index == 5) {
-            assertEquals("Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится.", actual, "Текст не совпадает");
-        }else if (index == 6) {
-            assertEquals("Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои.", actual, "Текст не совпадает");
-        }else if (index == 7) {
-            assertEquals("Да, обязательно. Всем самокатов! И Москве, и Московской области.", actual, "Текст не совпадает");
-        }
+    public void checkAnswerText(int index,String expectedText) {
+        String resultText = driver.findElement(By.id(String.format(answerLocator, index))).getText();
+        assertEquals(expectedText, resultText,"Текст ответа содержит ошибку");
     }
 
 //    Дополнительные тестовые сценарии
@@ -138,7 +120,7 @@ public class HomePage {
         driver.findElement(goLocator).click();
     }
     //метод возвращает истину, если на форме отображена картинка с текстом "Такого заказа нет"
-    public boolean orderVerificationIsDisplayed() {
+    public boolean orderStatusIsDisplayed() {
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.className("Track_NotFound__6oaoY")));
         return driver.findElement(orderVerificationLocator).isDisplayed();

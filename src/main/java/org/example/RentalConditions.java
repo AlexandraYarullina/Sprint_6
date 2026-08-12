@@ -8,6 +8,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.time.LocalDate;
+
+import static utils.Constants.ScooterColors.BLACK;
+import static utils.Constants.ScooterColors.GREY;
+
 // класс страницы для заполнения формы аренды
 public class RentalConditions {
     private WebDriver driver;
@@ -19,7 +24,7 @@ public class RentalConditions {
     //локатор для самоката в черном цвете
     private By blackColorScooter = By.xpath(".//input[@id='black']");
     //локатор для самоката в сером цвете
-    private By grayColorScooter = By.xpath(".//input[@id='grey']");
+    private By greyColorScooter = By.xpath(".//input[@id='grey']");
     //локатор для поля ввода комментарий для курьера
     private By commentForTheCourier=By.xpath("//div[@class='Order_Form__17u6u']/div[4]/input[@placeholder='Комментарий для курьера']");
     //локатор для кнопки Заказать
@@ -31,9 +36,8 @@ public class RentalConditions {
     }
 
     //метод для выбора даты доставки заказа
-    public void chooseDatePicker(String date) {
-        driver.findElement(datePicker).clear();
-        driver.findElement(datePicker).sendKeys(date);
+    public void chooseDatePicker() {
+        driver.findElement(datePicker).sendKeys(LocalDate.now().plusDays(1).toString());
         driver.findElement(datePicker).sendKeys(Keys.ENTER);
     }
     //метод для выбора срока аренды
@@ -50,10 +54,10 @@ public class RentalConditions {
         option.click();
     }
      //метод для выбора цветовой гаммы у самоката
-    public void chooseColorScooter(String color){
-        if(color.equals("grey")){
-            driver.findElement(grayColorScooter).click();
-        }else if (color.equals("black")){
+    public void chooseColorScooter(Enum color){
+        if(color.equals(GREY)){
+            driver.findElement(greyColorScooter).click();
+        }else if (color.equals(BLACK)){
             driver.findElement(blackColorScooter).click();
         }
     }
@@ -67,8 +71,8 @@ public class RentalConditions {
         driver.findElement(rentalOrderButton).click();
     }
     // метод, который объединяет ввод даты, срока оренды, цвета самоката, комментарий курьеру
-    public void rentalInfo(String date,String rentalPeriod,String color,String comment){
-        chooseDatePicker(date);
+    public void rentalInfo(String rentalPeriod,Enum color,String comment){
+        chooseDatePicker();
         selectRentalPeriod(rentalPeriod);
         chooseColorScooter(color);
         setCommentForTheCourier(comment);

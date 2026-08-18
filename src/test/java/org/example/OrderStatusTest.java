@@ -1,20 +1,10 @@
 package org.example;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static utils.Constants.NUMBER_ORDER;
 
-public class OrderStatusTest {
-    private WebDriver driver;
-
-    @BeforeEach
-    public void setUp(){
-        driver=new ChromeDriver();
-    }
+public class OrderStatusTest extends BaseTest{
 
     @Test
     public void orderStatusNavigation() {
@@ -24,16 +14,13 @@ public class OrderStatusTest {
         homePage.openHomePage();
         // нажатие на кнопку Статус заказа
         homePage.orderStatusButtonClick();
+        // нажатие на поле номер заказа
         homePage.numberOrderClick();
-        homePage.setNumberOrder("345687");
+        // ввода номера заказа
+        homePage.setNumberOrder(NUMBER_ORDER);
         // нажатие на кнопку Go!
         homePage.goButtonClick();
         // проверить, что отобразилась картинка с текстом "Такого заказа нет"
-        assertTrue(homePage.orderVerificationIsDisplayed());
-    }
-    // Закрытие браузера
-    @AfterEach
-    public void tearDown(){
-        driver.quit();
+        assertTrue(homePage.orderStatusIsDisplayed());
     }
 }
